@@ -1,0 +1,25 @@
+YOLO Tune - installing the plugin
+=================================
+
+WINDOWS
+  1. Copy the folder "YOLO Tune.vst3" into:
+       C:\Program Files\Common Files\VST3
+  2. Open your DAW and rescan plugins. YOLO Tune shows up as an effect
+     (by KINOK9 x RAZEE). Put it on a vocal track.
+  "YOLO Tune.exe" is a standalone app: it tunes your microphone live (use headphones).
+  The plugin window uses Microsoft Edge WebView2, which is already on Windows 10/11.
+
+MAC
+  1. Copy "YOLO Tune.vst3" into   ~/Library/Audio/Plug-Ins/VST3
+     Copy "YOLO Tune.component" into ~/Library/Audio/Plug-Ins/Components  (Logic / GarageBand)
+  2. The plugin isn't signed with an Apple developer certificate, so macOS may block it.
+     Open Terminal and run:
+       xattr -cr ~/Library/Audio/Plug-Ins/VST3/"YOLO Tune.vst3"
+       xattr -cr ~/Library/Audio/Plug-Ins/Components/"YOLO Tune.component"
+  3. Rescan plugins in your DAW.
+
+TIPS
+  - Use it as an insert on a mono or stereo vocal track.
+  - The plugin adds about 6 ms of delay (about 11 ms with Low Latency off); DAWs compensate automatically.
+  - Your saved presets are shared by every project.
+  - Click the yin-yang (top left) for credits.
