@@ -1,0 +1,55 @@
+name: Build YOLO Tune
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            label: Windows
+          - os: macos-14
+            label: macOS
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get the WebView2 SDK (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: nuget install Microsoft.Web.WebView2 -Version 1.0.1901.177 -OutputDirectory C:\webview2
+
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DJUCE_WEBVIEW2_PACKAGE_LOCATION=C:/webview2
+
+      - name: Configure (macOS)
+        if: runner.os == 'macOS'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 4
+
+      - name: Collect the plugin files
+        shell: bash
+        run: |
+          A="build/YOLO_artefacts/Release"
+          mkdir -p out
+          cp -R "$A/VST3/YOLO Tune.vst3" out/
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            cp -R "$A/AU/YOLO Tune.component" out/
+            cp -R "$A/Standalone/YOLO Tune.app" out/
+          else
+            cp "$A/Standalone/YOLO Tune.exe" out/
+          fi
+          cp INSTALL.txt out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: YOLO-Tune-${{ matrix.label }}
+          path: out
